@@ -1,4 +1,6 @@
-﻿namespace NeuralNetwork
+﻿using NeuralNetwork.Maths;
+
+namespace NeuralNetwork.Core
 {
     public class NeuralNetwork
     {   
@@ -20,17 +22,16 @@
 
         public double ProcessData(IEnumerable<double> inputData)
         {
-            if (_layerOfNeurons.Count != inputData.Count())
+            if (_layerOfNeurons[0].NeuronsCount != inputData.Count())
                 throw new ArgumentOutOfRangeException(nameof(inputData));
 
-            List<Neuron> firstNeurons = _layerOfNeurons[0].Neurons.ToList();
-            firstNeurons.ForEach(n => n.FeedForward(inputData.ToArray()));
-
-            for (int i = 1; i < _layerOfNeurons.Count(); i++)
+            var previousOutputs = inputData;
+            for (int i = 0; i < _layerOfNeurons.Count; i++)
             {
-                _layerOfNeurons[i].ProcessLayer(_layerOfNeurons[0].NeuronOutputs);
-                _layerOfNeurons[i].NeuronOutputs
+                _layerOfNeurons[i].ProcessLayer(previousOutputs);
+                previousOutputs = _layerOfNeurons[i].NeuronOutputs;
             }
+            //previousOutputs это наш выход
         }
 
         private void FillNetworkLayers()

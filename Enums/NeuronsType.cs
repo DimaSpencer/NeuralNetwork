@@ -1,6 +1,6 @@
-﻿namespace NeuralNetwork
+﻿namespace NeuralNetwork.Enum
 {
-    internal enum NeuronsType
+    public enum NeuronsType
     {
         Input,
         Hidden,

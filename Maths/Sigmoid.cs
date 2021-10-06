@@ -1,6 +1,9 @@
-﻿namespace NeuralNetwork
+﻿using System;
+using NeuralNetwork.Maths;
+
+namespace NeuralNetwork
 {
-    internal class SigmoidFunction : IActivationFunction
+    public class Sigmoid : IActivationFunction
     {
         public double Calculate(double inputX)
         {
