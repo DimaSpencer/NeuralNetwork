@@ -1,7 +1,7 @@
 ﻿using System;
 using NeuralNetwork.Maths;
 
-namespace NeuralNetwork
+namespace NeuralNetwork.Maths
 {
     public class Sigmoid : IActivationFunction
     {

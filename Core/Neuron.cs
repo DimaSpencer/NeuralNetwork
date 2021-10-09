@@ -1,9 +1,12 @@
-﻿namespace NeuralNetwork
+﻿using NeuralNetwork.Maths;
+
+namespace NeuralNetwork.Core
 {
-    internal class Neuron
+    public class Neuron
     {
         private readonly IActivationFunction _activationFunction;
         private List<double> _weights;
+        private List<double> _inputs;
 
         public Neuron(int relationCount, IActivationFunction activationFunction)
         {
@@ -19,30 +22,35 @@
             _activationFunction = activationFunction;
         }
 
-        public IEnumerable<double> Weights => _weights.AsReadOnly();
         public double Output { get; private set; }
+        public IEnumerable<double> Inputs => _inputs.AsReadOnly();
+        public IEnumerable<double> Weights => _weights.AsReadOnly();
 
-        public void FeedForward(IEnumerable<double> input)//велечина активации (0-1)
+        public void ProcessWeights(params double[] inputWeights)
         {
-            if (_weights.Count() != input.Count())
-                throw new ArgumentOutOfRangeException(nameof(input));
+            if (_weights.Count() != inputWeights.Count())
+                throw new ArgumentOutOfRangeException(nameof(inputWeights));
 
-            int relationCount = input.Count();
+            _inputs = inputWeights.ToList();
 
             double sum = 0;
-            for (int i = 0; i < relationCount; i++)
-                sum += _weights[i] * input.ElementAt(i);
+            for (int i = 0; i < inputWeights.Count(); i++)
+                sum += _weights[i] * inputWeights.ElementAt(i);
 
             Output = _activationFunction.Calculate(sum);
         }
 
+        public void ChangeWieght(double value, int forIndex)
+        {
+
+        }
+
         private void InitializeWeightCollection(int collectionCount, double value = 0.5)
         {
-            if (collectionCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(collectionCount));
-
             _weights = new List<double>(collectionCount);
-            _weights.ForEach(w => w = value);
+
+            for (int i = 0; i < collectionCount; i++)
+                _weights.Add(value);
         }
     }
 }

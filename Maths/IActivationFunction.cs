@@ -1,6 +1,6 @@
-﻿namespace NeuralNetwork
+﻿namespace NeuralNetwork.Maths
 {
-    internal interface IActivationFunction
+    public interface IActivationFunction
     {
         double Calculate(double inputX);
     }

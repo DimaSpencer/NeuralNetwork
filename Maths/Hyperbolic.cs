@@ -1,6 +1,6 @@
 ﻿using NeuralNetwork.Maths;
 
-namespace NeuralNetwork
+namespace NeuralNetwork.Maths
 {
     public class Hyperbolic : IActivationFunction
     {

@@ -4,3 +4,10 @@ C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.AssemblyInfoInputs.cache
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.AssemblyInfo.cs
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.csproj.CoreCompileInputs.cache
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\bin\Debug\net6.0\NeuralNetwork.deps.json
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\bin\Debug\net6.0\NeuralNetwork.dll
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\bin\Debug\net6.0\ref\NeuralNetwork.dll
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\bin\Debug\net6.0\NeuralNetwork.pdb
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.dll
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\ref\NeuralNetwork.dll
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.pdb
