@@ -1,7 +1,10 @@
-﻿namespace NeuralNetwork.Core
+﻿using NeuralNetworkLib.Core;
+
+namespace NeuralNetworkLib.Abstractions
 {
     public interface INeuralNetwork
     {
-        IEnumerable<double> ProcessData(IEnumerable<double> inputData)
+        IEnumerable<LayerOfNeurons> LayerOfNeurons { get; }
+        IEnumerable<double> ProcessData(IEnumerable<double> inputData);
     }
 }

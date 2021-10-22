@@ -1,7 +1,8 @@
-﻿using NeuralNetwork.Enums;
-using NeuralNetwork.Maths;
+﻿using NeuralNetworkLib.Abstractions;
+using NeuralNetworkLib.Enums;
+using NeuralNetworkLib.Maths;
 
-namespace NeuralNetwork.Core
+namespace NeuralNetworkLib.Core
 {
     public class NeuralNetwork : INeuralNetwork
     {   
@@ -26,11 +27,11 @@ namespace NeuralNetwork.Core
             if (_layerOfNeurons[0].NeuronsCount != inputData.Count())
                 throw new ArgumentOutOfRangeException(nameof(inputData));
 
-            var lastOutputs = inputData;
+            List<double> lastOutputs = inputData.ToList();
             for (int i = 0; i < _layerOfNeurons.Count; i++)
             {
                 _layerOfNeurons[i].ProcessLayer(lastOutputs);
-                lastOutputs = _layerOfNeurons[i].Outputs;
+                lastOutputs = _layerOfNeurons[i].Outputs.ToList();
             }
             return lastOutputs;
         }
@@ -58,16 +59,31 @@ namespace NeuralNetwork.Core
 
         private void InitializeLayer(int previousNeuronsCount, int neuronsCount, NeuronType neuronType = NeuronType.Hidden)
         {
-            IEnumerable<Neuron> neurons = CreateNeuronList(neuronsCount, previousNeuronsCount, Configuration.ActivationFunction);
+            Neuron[] neurons = CreateNeuronList(neuronsCount, previousNeuronsCount, Configuration.ActivationFunction);
 
-            var layer = neuronType is NeuronType.Input ? new InputLayerOfNeurons(neurons) : new LayerOfNeurons(neurons);
+            int weightCount = neurons.First().WeighingListCapacity;
+            LayerOfNeurons layer;
+            if (neuronType == NeuronType.Input)
+            {
+                WeightsInitializer.InitializeNeuronsSpecificValues(weightCount, 1, neurons);
+                layer = new InputLayerOfNeurons(neurons);
+            }
+            else
+            {
+                WeightsInitializer.InitializeNeuronsRandomValues(weightCount, neurons);
+                layer = new LayerOfNeurons(neurons);
+            }
+
             _layerOfNeurons.Add(layer);
         }
 
-        private IEnumerable<Neuron> CreateNeuronList(int count, int previousNeuronCount, IActivationFunction activationFunction)
+        private Neuron[] CreateNeuronList(int count, int previousNeuronCount, IActivationFunction activationFunction)
         {
+            Neuron[] neurons = new Neuron[count];
             for (int i = 0; i < count; i++)
-                yield return new Neuron(previousNeuronCount, activationFunction);
+                neurons[i] = new Neuron(previousNeuronCount, activationFunction);
+
+            return neurons;
         }
     }
 }

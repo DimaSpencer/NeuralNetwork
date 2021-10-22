@@ -1,11 +1,12 @@
-﻿using NeuralNetwork.Abstractions;
+﻿using NeuralNetworkLib.Abstractions;
+using NeuralNetworkLib.Maths;
 
-namespace NeuralNetwork.Core
+namespace NeuralNetworkLib.Core
 {
     public class BackpropagationTrainer : INeuralNetworkTrainer
     {
         private readonly INeuralNetwork _neuralNetworkStudent;
-        private readonly double _learningRate;
+        private double _learningRate = 0.1;
 
         public BackpropagationTrainer(INeuralNetwork neuralNetworkStudent)
         {
@@ -16,62 +17,102 @@ namespace NeuralNetwork.Core
             _neuralNetworkStudent = neuralNetworkStudent;
         }
 
-        public void Train(IEnumerable<double> inputs, double expectedResult, double learningRate)
+        public double LearningRate
+        {
+            get => _learningRate;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                _learningRate = value;
+            }
+        }
+
+        public void Learn(IEnumerable<Tuple<double[], double[]>> dataset, int epoch)
+        {
+            if (dataset is null)
+                throw new ArgumentNullException(nameof(dataset));
+            if (epoch < 0)
+                throw new ArgumentOutOfRangeException();
+
+            for (int i = 0; i < epoch; i++)
+            {
+                foreach (var data in dataset)
+                {
+                    Train(data.Item2, data.Item1);
+                }
+            }
+        }
+
+        public void Train(IEnumerable<double> inputs, IEnumerable<double> expectedResults)
         {
             if (inputs is null)
-                throw new ArgumentNullException(nameof(inputs);
-            if (learningRate =< 0)
-                throw new ArgumentOutOfRangeException(nameof(learningRate));
+                throw new ArgumentNullException(nameof(inputs));
+            if(_neuralNetworkStudent.LayerOfNeurons.First().NeuronsCount != inputs.Count())
+                throw new ArgumentOutOfRangeException(nameof(inputs));
+            if (_neuralNetworkStudent.LayerOfNeurons.Last().NeuronsCount != expectedResults.Count())
+                throw new ArgumentOutOfRangeException(nameof(inputs));
 
             var actualResults = _neuralNetworkStudent.ProcessData(inputs);
 
-            double difference = actualResults - expectedResult;
-            foreach (var neuron in _neuralNetworkStudent.LayerOfNeurons.Last().Neurons)
+            //для последнего результирующего слоя
+            var lastNeurons = _neuralNetworkStudent.LayerOfNeurons.Last().Neurons;
+            for (int i = 0; i < expectedResults.Count(); i++)
             {
-                TrainNeuron(neuron, difference, learningRate);
+                Neuron currentNeuron = lastNeurons.ElementAt(i);
+
+                double error = actualResults.ElementAt(i) - expectedResults.ElementAt(i);
+                currentNeuron.Error = error;
+
+                TrainNeuron(currentNeuron);
             }
 
-            for (int i = _neuralNetworkStudent.LayerOfNeurons.Count() - 2; i < ; i++)
+            //для остальных нейронов
+            for (int i = _neuralNetworkStudent.LayerOfNeurons.Count() - 2; i >= 0; i--)
             {
-                LayerOfNeurons currentLayer = _neuralNetworkStudent.LayerOfNeurons[i];
-                LayerOfNeurons previousLayer = _neuralNetworkStudent.LayerOfNeurons[i + 1];
+                LayerOfNeurons currentLayer = _neuralNetworkStudent.LayerOfNeurons.ElementAt(i);
+                LayerOfNeurons previousLayer = _neuralNetworkStudent.LayerOfNeurons.ElementAt(i + 1);
+
                 for (int j = 0; j < currentLayer.NeuronsCount; j++)
                 {
-                    Neuron neuron = currentLayer.Neurons.ElementAt(j);
-                    for (int k = 0; k < previousLayer.Neurons.Count; k++)
+                    Neuron currentNeuron = currentLayer.Neurons.ElementAt(j);
+                    double error = 0;
+                    //через цикл берется превыдущий слой, а с него дельты всех превыдущих нейронов
+                    for (int k = 0; k < previousLayer.Neurons.Count(); k++)
                     {
-                        Neuron previousNeuron = previousLayer.Neurons.ElementAt(k);
-                        double weight = previousNeuron.Weights.ElementAt(j);
-                        double error = weight * //дельта нейрона 
+                        Neuron neuron = previousLayer.Neurons.ElementAt(k);
+                        double weight = neuron.Weights.ElementAt(j);
+
+                        error = weight * CalculateDelta(neuron.Output, neuron.Error);//дельта нейрона 
+                        currentNeuron.Error = error;
+                        TrainNeuron(currentNeuron);
                     }
                 }
             }
         }
 
-        private double TrainNeuron(Neuron learner, double error, double rate)
+        private void TrainNeuron(Neuron learner)
         {
-            double delta = CalculateDelta(error, learner.Output)
+            double delta = CalculateDelta(learner.Output, learner.Error);
 
-            for (int i = 0; i < learner.Weights; i++)
+            for (int i = 0; i < learner.Weights.Count(); i++)
             {
                 double weight = learner.Weights.ElementAt(i);
-                double inputWeight = learner.Inputs.ElementAt(i);
+                double input = learner.Inputs.ElementAt(i);
 
-                weight -= inputWeight * delta * rate;
-                learner.ChangeWieght(value: weight, forIndex: i);
+                weight -= input * delta * _learningRate;
+                learner.ChangeWeight(value: weight, byIndex: i);
             }
-
-            return delta;
         }
 
         private double CalculateDelta(double output, double error)
         {
-            double delta = error * Math.CalculateIntegral(output);
-            return delta;
+            return error * CalculateSigmoidDx(output);
         }
-        private double CalculateError()
+        private double CalculateSigmoidDx(double x)
         {
-
+            double sigmoid = 1.0 / (1.0 + Math.Exp(-x));
+            return sigmoid * (1.0 - sigmoid);
         }
     }
 }

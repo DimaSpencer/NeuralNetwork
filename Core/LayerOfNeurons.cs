@@ -1,6 +1,5 @@
-﻿using NeuralNetwork;
-
-namespace NeuralNetwork.Core
+﻿
+namespace NeuralNetworkLib.Core
 {
     public class LayerOfNeurons
     {

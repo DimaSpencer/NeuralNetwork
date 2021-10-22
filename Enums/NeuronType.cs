@@ -1,5 +1,5 @@
 ﻿
-namespace NeuralNetwork.Enums
+namespace NeuralNetworkLib.Enums
 {
     internal enum NeuronType
     {

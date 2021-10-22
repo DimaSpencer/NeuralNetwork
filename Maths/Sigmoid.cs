@@ -1,13 +1,12 @@
 ﻿using System;
-using NeuralNetwork.Maths;
 
-namespace NeuralNetwork.Maths
+namespace NeuralNetworkLib.Maths
 {
     public class Sigmoid : IActivationFunction
     {
         public double Calculate(double inputX)
         {
-            return 1 / (1 + Math.Exp(-inputX));
+            return 1.0 / (1.0 + Math.Exp(-inputX));
         }
     }
 }

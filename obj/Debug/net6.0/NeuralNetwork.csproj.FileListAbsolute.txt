@@ -1,5 +1,4 @@
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.GlobalUsings.g.cs
-C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.csproj.AssemblyReference.cache
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.AssemblyInfoInputs.cache
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.AssemblyInfo.cs
@@ -11,3 +10,4 @@ C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\bin\Debug\net6.0\
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.dll
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\ref\NeuralNetwork.dll
 C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.pdb
+C:\Users\Дима\source\repos\NeuralNetworksCMD\NeuralNetwork\obj\Debug\net6.0\NeuralNetwork.csproj.AssemblyReference.cache

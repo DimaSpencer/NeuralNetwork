@@ -1,12 +1,12 @@
-﻿using NeuralNetwork.Maths;
+﻿using NeuralNetworkLib.Maths;
 
-namespace NeuralNetwork.Core
+namespace NeuralNetworkLib.Core
 {
     public class Neuron
     {
         private readonly IActivationFunction _activationFunction;
-        private List<double> _weights;
-        private List<double> _inputs;
+        private double[] _weights;
+        private double[] _inputs;
 
         public Neuron(int relationCount, IActivationFunction activationFunction)
         {
@@ -17,40 +17,38 @@ namespace NeuralNetwork.Core
                 throw new ArgumentNullException(nameof(activationFunction));
             #endregion
 
-            InitializeWeightCollection(collectionCount: relationCount, value: 0.5);
+            _weights = new double[relationCount];
+            _inputs = new double[relationCount];
 
             _activationFunction = activationFunction;
         }
 
         public double Output { get; private set; }
-        public IEnumerable<double> Inputs => _inputs.AsReadOnly();
-        public IEnumerable<double> Weights => _weights.AsReadOnly();
+        public double Error { get; set; }
+        public IEnumerable<double> Inputs => _inputs;
+        public IEnumerable<double> Weights => _weights;
+        public int WeighingListCapacity => _weights.Length; //тут может быть ошибочка
 
-        public void ProcessWeights(params double[] inputWeights)
+        public double ProcessWeights(params double[] inputWeights)
         {
-            if (_weights.Count() != inputWeights.Count())
+            if (_inputs.Length != inputWeights.Count())
                 throw new ArgumentOutOfRangeException(nameof(inputWeights));
 
-            _inputs = inputWeights.ToList();
+            _inputs = inputWeights;
 
             double sum = 0;
             for (int i = 0; i < inputWeights.Count(); i++)
                 sum += _weights[i] * inputWeights.ElementAt(i);
 
-            Output = _activationFunction.Calculate(sum);
+            return Output = _activationFunction.Calculate(sum);
         }
 
-        public void ChangeWieght(double value, int forIndex)
+        public void ChangeWeight(double value, int byIndex)
         {
+            if (byIndex < 0 || _weights.Length - 1 < byIndex)
+                throw new IndexOutOfRangeException(nameof(byIndex));
 
-        }
-
-        private void InitializeWeightCollection(int collectionCount, double value = 0.5)
-        {
-            _weights = new List<double>(collectionCount);
-
-            for (int i = 0; i < collectionCount; i++)
-                _weights.Add(value);
+            _weights[byIndex] = value;
         }
     }
 }

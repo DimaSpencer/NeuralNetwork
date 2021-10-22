@@ -1,6 +1,6 @@
-﻿using NeuralNetwork.Maths;
+﻿using NeuralNetworkLib.Maths;
 
-namespace NeuralNetwork.Core
+namespace NeuralNetworkLib.Core
 {
     public class NeuralNetworkSettings
     {

@@ -1,4 +1,4 @@
-﻿namespace NeuralNetwork.Maths
+﻿namespace NeuralNetworkLib.Maths
 {
     public interface IActivationFunction
     {
