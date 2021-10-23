@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "nyxsxNHuoAvmiEUf+W1eOuTvoDVx6GM9q0o2QgrIQTnvayUL+ouWe2O25iAppfqxm1pZxweG6Ev/Qyb2m6CXbw==",
+  "dgSpecHash": "svFpQ1OItHSbR2Q4LfyHZPpDNLqGnHs/rFDOsSu38k0Yy3E+et9qf4VecOaS538hIqUhF/SftgzhPmis1RNFjw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Дима\\source\\repos\\NeuralNetworksCMD\\NeuralNetwork\\NeuralNetwork.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Дима\\.nuget\\packages\\csvhelper\\27.1.1\\csvhelper.27.1.1.nupkg.sha512"
+  ],
   "logs": []
 }

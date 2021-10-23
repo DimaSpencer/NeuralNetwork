@@ -4,25 +4,36 @@ using NeuralNetworkLib.Maths;
 
 namespace NeuralNetworkLib.Core
 {
-    public class NeuralNetwork : INeuralNetwork
+    public class NeuralNetworkBase : INeuralNetwork
     {   
         private List<LayerOfNeurons> _layerOfNeurons;
 
-        public NeuralNetwork(NeuralNetworkSettings configuration)
+        public NeuralNetworkBase(Action<NeuralNetworkSettings> configuration)
+        {
+            if (configuration is null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            Configuration = new NeuralNetworkSettings( 0, 0, 0);
+            configuration.Invoke(Configuration);
+
+            _layerOfNeurons = new List<LayerOfNeurons>(Configuration.AllLayersCount);
+            FillNetworkLayers();
+        }
+        public NeuralNetworkBase(NeuralNetworkSettings configuration)
         {
             if (configuration is null)
                 throw new ArgumentNullException(nameof(configuration));
 
             Configuration = configuration;
-            _layerOfNeurons = new List<LayerOfNeurons>(Configuration.AllLayersCount);
 
+            _layerOfNeurons = new List<LayerOfNeurons>(Configuration.AllLayersCount);
             FillNetworkLayers();
         }
 
         public NeuralNetworkSettings Configuration { get; }
         public IEnumerable<LayerOfNeurons> LayerOfNeurons => _layerOfNeurons.AsReadOnly();
 
-        public IEnumerable<double> ProcessData(IEnumerable<double> inputData)
+        public IEnumerable<double> ProcessData(IEnumerable<double> inputData) //IDataset
         {
             if (_layerOfNeurons[0].NeuronsCount != inputData.Count())
                 throw new ArgumentOutOfRangeException(nameof(inputData));
@@ -59,9 +70,16 @@ namespace NeuralNetworkLib.Core
 
         private void InitializeLayer(int previousNeuronsCount, int neuronsCount, NeuronType neuronType = NeuronType.Hidden)
         {
-            Neuron[] neurons = CreateNeuronList(neuronsCount, previousNeuronsCount, Configuration.ActivationFunction);
+            IActivationFunction activationFunction = Configuration.ActivationFunction switch
+            {
+                ActivationFunction.Sigmoid => new Sigmoid(),
+                ActivationFunction.Hyperbolic => new Hyperbolic(),
+                _ => new Sigmoid(),
+            };
 
-            int weightCount = neurons.First().WeighingListCapacity;
+            Neuron[] neurons = CreateNeuronList(neuronsCount, previousNeuronsCount, activationFunction);
+
+            int weightCount = neurons.First().Weights.Count();
             LayerOfNeurons layer;
             if (neuronType == NeuronType.Input)
             {

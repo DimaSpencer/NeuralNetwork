@@ -1,4 +1,5 @@
-﻿using NeuralNetworkLib.Maths;
+﻿using NeuralNetworkLib.Abstractions;
+using NeuralNetworkLib.Maths;
 
 namespace NeuralNetworkLib.Maths
 {

@@ -1,13 +1,13 @@
-﻿using NeuralNetworkLib.Maths;
+﻿using NeuralNetworkLib.Abstractions;
+using NeuralNetworkLib.Enums;
+using NeuralNetworkLib.Maths;
 
 namespace NeuralNetworkLib.Core
 {
     public class NeuralNetworkSettings
     {
-        public NeuralNetworkSettings(IActivationFunction activationFunction, int inputNeuronsCount, int outputNeuronsCount, params int[] hiddenLayers)
+        public NeuralNetworkSettings(int inputNeuronsCount, int outputNeuronsCount, ActivationFunction activationFunction = ActivationFunction.Sigmoid, params int[] hiddenLayers)
         {
-            if (activationFunction is null)
-                throw new ArgumentNullException(nameof(activationFunction));
             if (inputNeuronsCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(inputNeuronsCount));
             if(outputNeuronsCount < 0)
@@ -21,10 +21,10 @@ namespace NeuralNetworkLib.Core
             HiddenLayers = new List<int>(hiddenLayers);
         }
 
-        public IActivationFunction ActivationFunction { get; }
-        public int InputNeuronsCount { get; }
-        public int OutputNeuronsCount { get; }
-        public  IEnumerable<int> HiddenLayers { get; }
+        public ActivationFunction ActivationFunction { get; set; }
+        public int InputNeuronsCount { get; set; }
+        public int OutputNeuronsCount { get; set; }
+        public  IEnumerable<int> HiddenLayers { get; set; }
 
         public int AllLayersCount => HiddenLayers.Count() + 2;
     }

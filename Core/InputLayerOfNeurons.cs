@@ -1,5 +1,6 @@
 ﻿namespace NeuralNetworkLib.Core
 {
+
     public class InputLayerOfNeurons : LayerOfNeurons
     {
         public InputLayerOfNeurons(IEnumerable<Neuron> neurons) : base(neurons)
@@ -12,7 +13,7 @@
                 throw new ArgumentOutOfRangeException(nameof(inputWeights));
 
             for (int i = 0; i < _neurons.Count; i++)
-                _neurons[i].ProcessWeights(inputWeights.ElementAt(i));
+                _neurons[i].SetInputs(inputWeights.ElementAt(i));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace NeuralNetworkLib.Maths
+﻿namespace NeuralNetworkLib.Abstractions
 {
     public interface IActivationFunction
     {

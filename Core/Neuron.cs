@@ -1,4 +1,4 @@
-﻿using NeuralNetworkLib.Maths;
+﻿using NeuralNetworkLib.Abstractions;
 
 namespace NeuralNetworkLib.Core
 {
@@ -27,7 +27,16 @@ namespace NeuralNetworkLib.Core
         public double Error { get; set; }
         public IEnumerable<double> Inputs => _inputs;
         public IEnumerable<double> Weights => _weights;
-        public int WeighingListCapacity => _weights.Length; //тут может быть ошибочка
+
+        //временное решение, обязательно поменять, потому что аутпут при обработке сигмоиды при вводе 0 будет всегда 0.5, мы это обходим этим методом
+        public void SetInputs(params double[] inputs)
+        {
+            if (inputs is null)
+                throw new ArgumentNullException(nameof(inputs));
+
+            _inputs = inputs;
+            Output = inputs.Average();
+        }
 
         public double ProcessWeights(params double[] inputWeights)
         {

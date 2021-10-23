@@ -1,7 +1,9 @@
-﻿namespace NeuralNetworkLib.Abstractions
+﻿using NeuralNetworkLib.Core;
+
+namespace NeuralNetworkLib.Abstractions
 {
     public interface INeuralNetworkTrainer
     {
-        void Train(IEnumerable<double> inputs, IEnumerable<double> expectedResults);
+        void StudyingAtDataset(Dataset dataset, int epoch);
     }
 }

@@ -28,23 +28,25 @@ namespace NeuralNetworkLib.Core
             }
         }
 
-        public void Learn(IEnumerable<Tuple<double[], double[]>> dataset, int epoch)
+        public void StudyingAtDataset(Dataset dataset, int epoch)
         {
             if (dataset is null)
                 throw new ArgumentNullException(nameof(dataset));
             if (epoch < 0)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(epoch));
 
             for (int i = 0; i < epoch; i++)
             {
-                foreach (var data in dataset)
+                for (int j = 0; j < dataset.Sets.Count; j++)
                 {
-                    Train(data.Item2, data.Item1);
+                    var inputs = dataset.Sets.ElementAt(j).Key;
+                    var expectedResults = dataset.Sets.ElementAt(j).Value;
+                    TrainSet(inputs, expectedResults);
                 }
             }
         }
 
-        public void Train(IEnumerable<double> inputs, IEnumerable<double> expectedResults)
+        private void TrainSet(IEnumerable<double> inputs, IEnumerable<double> expectedResults)
         {
             if (inputs is null)
                 throw new ArgumentNullException(nameof(inputs));
@@ -77,13 +79,13 @@ namespace NeuralNetworkLib.Core
                 {
                     Neuron currentNeuron = currentLayer.Neurons.ElementAt(j);
                     double error = 0;
-                    //через цикл берется превыдущий слой, а с него дельты всех превыдущих нейронов
+
                     for (int k = 0; k < previousLayer.Neurons.Count(); k++)
                     {
                         Neuron neuron = previousLayer.Neurons.ElementAt(k);
                         double weight = neuron.Weights.ElementAt(j);
 
-                        error = weight * CalculateDelta(neuron.Output, neuron.Error);//дельта нейрона 
+                        error = weight * CalculateDelta(neuron.Output, neuron.Error);
                         currentNeuron.Error = error;
                         TrainNeuron(currentNeuron);
                     }
@@ -109,6 +111,7 @@ namespace NeuralNetworkLib.Core
         {
             return error * CalculateSigmoidDx(output);
         }
+
         private double CalculateSigmoidDx(double x)
         {
             double sigmoid = 1.0 / (1.0 + Math.Exp(-x));
