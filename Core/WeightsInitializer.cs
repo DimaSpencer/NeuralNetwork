@@ -1,4 +1,6 @@
-﻿namespace NeuralNetworkLib.Core
+﻿using NeuralNetworkLib.Extensions;
+
+namespace NeuralNetworkLib.Core
 {
     public static class WeightsInitializer
     {
@@ -13,7 +15,7 @@
             {
                 for (int j = 0; j < weightCount; j++)
                 {
-                    neurons.ElementAt(i).ChangeWeight(weightGenerator.NextDouble(), j);
+                    neurons.ElementAt(i).ChangeWeight(weightGenerator.NextDouble(-0.5, 0.5), j);
                 }
             }
         }

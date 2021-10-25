@@ -4,6 +4,7 @@ using NeuralNetworkLib.Maths;
 
 namespace NeuralNetworkLib.Core
 {
+    [Serializable]
     public class NeuralNetworkBase : INeuralNetwork
     {   
         private List<LayerOfNeurons> _layerOfNeurons;
@@ -19,6 +20,7 @@ namespace NeuralNetworkLib.Core
             _layerOfNeurons = new List<LayerOfNeurons>(Configuration.AllLayersCount);
             FillNetworkLayers();
         }
+
         public NeuralNetworkBase(NeuralNetworkSettings configuration)
         {
             if (configuration is null)
@@ -31,18 +33,18 @@ namespace NeuralNetworkLib.Core
         }
 
         public NeuralNetworkSettings Configuration { get; }
-        public IEnumerable<LayerOfNeurons> LayerOfNeurons => _layerOfNeurons.AsReadOnly();
+        public IReadOnlyCollection<LayerOfNeurons> LayerOfNeurons => _layerOfNeurons.AsReadOnly();
 
-        public IEnumerable<double> ProcessData(IEnumerable<double> inputData) //IDataset
+        public IEnumerable<double> ProcessData(IEnumerable<double> inputData)
         {
             if (_layerOfNeurons[0].NeuronsCount != inputData.Count())
                 throw new ArgumentOutOfRangeException(nameof(inputData));
 
-            List<double> lastOutputs = inputData.ToList();
-            for (int i = 0; i < _layerOfNeurons.Count; i++)
+            IEnumerable<double> lastOutputs = inputData;
+            for (int i = 1; i < _layerOfNeurons.Count; i++)
             {
                 _layerOfNeurons[i].ProcessLayer(lastOutputs);
-                lastOutputs = _layerOfNeurons[i].Outputs.ToList();
+                lastOutputs = _layerOfNeurons[i].Outputs;
             }
             return lastOutputs;
         }

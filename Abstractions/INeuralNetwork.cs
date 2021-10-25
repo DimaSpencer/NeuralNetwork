@@ -4,7 +4,7 @@ namespace NeuralNetworkLib.Abstractions
 {
     public interface INeuralNetwork
     {
-        IEnumerable<LayerOfNeurons> LayerOfNeurons { get; }
+        IReadOnlyCollection<LayerOfNeurons> LayerOfNeurons { get; }
         IEnumerable<double> ProcessData(IEnumerable<double> inputData);
     }
 }

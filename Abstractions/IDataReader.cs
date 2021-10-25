@@ -2,6 +2,6 @@
 {
     public interface IDataReader
     {
-        //TResult Read<TResult>(string source);
+        IList<TRow> Read<TRow>(string source);
     }
 }

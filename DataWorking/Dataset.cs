@@ -1,12 +1,12 @@
 ﻿using NeuralNetworkLib.Abstractions;
+using NeuralNetworkLib.Extensions;
 
 namespace NeuralNetworkLib.Core
 {
+    [Serializable]
     public class Dataset
     {
         private Dictionary<double[], double[]> _datasets;
-        private readonly int _inputCount;
-        private readonly int _expectedResultsCount;
         private readonly IInputConverter _converter;
 
         public Dataset(int inputCount, int expectedResultsCount, IInputConverter? converter = null)
@@ -19,43 +19,45 @@ namespace NeuralNetworkLib.Core
             if (converter is null)
                 converter = new Scaler();
 
+            InputCount = inputCount;
+            ExpectedResultsCount = expectedResultsCount;
+            
             _datasets = new Dictionary<double[], double[]>();
-            _inputCount = inputCount;
-            _expectedResultsCount = expectedResultsCount;
             _converter = converter;
         }
 
+        public int InputCount { get; }
+        public int ExpectedResultsCount { get; }
         public IReadOnlyDictionary<double[], double[]> Sets => _datasets;
         public IReadOnlyCollection<double[]> Inputs => _datasets.Keys;
         public IReadOnlyCollection<double[]> ExpectedResults => _datasets.Values;
 
-        public void InitializeFrom2dArray(double[,] inputSets, double[,] expectedResults)
+        public void InitializeFrom2dArray(double[,] inputs, double[,] expectedResults)
         {
-            if (inputSets is null)
-                throw new ArgumentNullException(nameof(inputSets));
-            if (inputSets.GetLength(1) != _inputCount)
-                throw new ArgumentOutOfRangeException(nameof(inputSets));
+            double inputColumnLength = inputs.GetLength(1);
+            double inputRowLength = inputs.GetLength(0);
+
+            if (inputRowLength != expectedResults.GetLength(0))
+                throw new ArgumentOutOfRangeException(nameof(inputs));
+
+            if (inputs is null)
+                throw new ArgumentNullException(nameof(inputs));
+            if (inputColumnLength != InputCount)
+                throw new ArgumentOutOfRangeException(nameof(inputs));
 
             if (expectedResults is null)
                 throw new ArgumentNullException(nameof(expectedResults));
-            if (expectedResults.GetLength(1) != _expectedResultsCount)
+            if (expectedResults.GetLength(1) != ExpectedResultsCount)
                 throw new ArgumentOutOfRangeException(nameof(expectedResults));
 
             _datasets.Clear();
 
-            inputSets = _converter.Convert(inputSets);
-
-            for (int row = 0; row < inputSets.GetLength(0); row++)
+            for (int row = 0; row < inputRowLength; row++)
             {
-                var inputs = Enumerable.Range(0, inputSets.GetLength(1))
-                    .Select(x => inputSets[row, x])
-                    .ToArray();
+                var inputRows = inputs.GetRow(row);
+                var expectedRows = expectedResults.GetRow(row);
 
-                var eResults = Enumerable.Range(0, expectedResults.GetLength(1))
-                    .Select(x => expectedResults[row, x])
-                    .ToArray();
-
-                _datasets.Add(inputs, eResults);
+                _datasets.Add(inputRows, expectedRows);
             }
         }
 
@@ -63,12 +65,12 @@ namespace NeuralNetworkLib.Core
         {
             if (inputs is null)
                 throw new ArgumentNullException(nameof(inputs));
-            if (inputs.Count() != _inputCount)
+            if (inputs.Count() != InputCount)
                 throw new ArgumentOutOfRangeException(nameof(inputs));
 
             if(expectedResults is null)
                 throw new ArgumentNullException(nameof(expectedResults));
-            if (expectedResults.Count() != _expectedResultsCount)
+            if (expectedResults.Count() != ExpectedResultsCount)
                 throw new ArgumentOutOfRangeException(nameof(expectedResults));
 
             _datasets.Add(inputs, expectedResults);

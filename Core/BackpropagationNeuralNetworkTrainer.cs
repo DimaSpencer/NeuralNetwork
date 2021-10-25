@@ -6,15 +6,17 @@ namespace NeuralNetworkLib.Core
     public class BackpropagationTrainer : INeuralNetworkTrainer
     {
         private readonly INeuralNetwork _neuralNetworkStudent;
-        private double _learningRate = 0.1;
+        private double _learningRate;
 
-        public BackpropagationTrainer(INeuralNetwork neuralNetworkStudent)
+        public BackpropagationTrainer(INeuralNetwork neuralNetworkStudent, double learningRate = 0.1)
         {
             if (neuralNetworkStudent is null)
                 throw new ArgumentNullException(nameof(neuralNetworkStudent));
-            
+            if (learningRate <= 0)
+                throw new ArgumentOutOfRangeException(nameof(learningRate));
 
             _neuralNetworkStudent = neuralNetworkStudent;
+            _learningRate = learningRate;
         }
 
         public double LearningRate
@@ -37,6 +39,9 @@ namespace NeuralNetworkLib.Core
 
             for (int i = 0; i < epoch; i++)
             {
+                if (i % 100 == 0)
+                    Console.WriteLine($"{i} эпоха пройдена");
+
                 for (int j = 0; j < dataset.Sets.Count; j++)
                 {
                     var inputs = dataset.Sets.ElementAt(j).Key;
@@ -78,15 +83,13 @@ namespace NeuralNetworkLib.Core
                 for (int j = 0; j < currentLayer.NeuronsCount; j++)
                 {
                     Neuron currentNeuron = currentLayer.Neurons.ElementAt(j);
-                    double error = 0;
 
                     for (int k = 0; k < previousLayer.Neurons.Count(); k++)
                     {
                         Neuron neuron = previousLayer.Neurons.ElementAt(k);
                         double weight = neuron.Weights.ElementAt(j);
 
-                        error = weight * CalculateDelta(neuron.Output, neuron.Error);
-                        currentNeuron.Error = error;
+                        currentNeuron.Error = weight * CalculateDelta(neuron.Output, neuron.Error);
                         TrainNeuron(currentNeuron);
                     }
                 }
@@ -114,8 +117,8 @@ namespace NeuralNetworkLib.Core
 
         private double CalculateSigmoidDx(double x)
         {
-            double sigmoid = 1.0 / (1.0 + Math.Exp(-x));
-            return sigmoid * (1.0 - sigmoid);
+            //double sigmoid = 1.0 / (1.0 + Math.Exp(-x));
+            return x * (1.0 - x);
         }
     }
 }

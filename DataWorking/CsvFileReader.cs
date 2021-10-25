@@ -5,7 +5,7 @@ namespace NeuralNetwork.Core
 {
     public class CsvFileReader : IDataReader
     {
-        public List<TRow> Read<TRow>(string source)
+        public IList<TRow> Read<TRow>(string source)
         {
             if (source.Contains(".csv") == false)
                 throw new FormatException($"Incorrect file format {source}");

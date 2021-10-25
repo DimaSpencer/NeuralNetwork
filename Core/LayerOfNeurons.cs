@@ -1,6 +1,7 @@
 ﻿
 namespace NeuralNetworkLib.Core
 {
+    [Serializable]
     public class LayerOfNeurons
     {
         protected List<Neuron> _neurons;
@@ -13,7 +14,7 @@ namespace NeuralNetworkLib.Core
             _neurons = neurons.ToList();
         }
 
-        public IEnumerable<Neuron> Neurons => _neurons.AsReadOnly();
+        public IReadOnlyCollection<Neuron> Neurons => _neurons.AsReadOnly();
         public IEnumerable<double> Outputs => _neurons.Select(n => n.Output);
 
         public int NeuronsCount => _neurons.Count();
@@ -23,7 +24,7 @@ namespace NeuralNetworkLib.Core
             if (inputWeights.Count() != _neurons.First().Weights.Count())
                 throw new ArgumentOutOfRangeException(nameof(inputWeights));
 
-            _neurons.ForEach(n => n.ProcessWeights(inputWeights.ToArray()));
+            _neurons.ForEach(n => n.ProcessInputValues(inputWeights.ToArray()));
         }
     }
 }

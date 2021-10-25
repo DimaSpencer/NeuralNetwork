@@ -2,6 +2,7 @@
 
 namespace NeuralNetworkLib.Core
 {
+    [Serializable]
     public class Neuron
     {
         private readonly IActivationFunction _activationFunction;
@@ -25,8 +26,8 @@ namespace NeuralNetworkLib.Core
 
         public double Output { get; private set; }
         public double Error { get; set; }
-        public IEnumerable<double> Inputs => _inputs;
-        public IEnumerable<double> Weights => _weights;
+        public IReadOnlyCollection<double> Inputs => _inputs;
+        public IReadOnlyCollection<double> Weights => _weights;
 
         //временное решение, обязательно поменять, потому что аутпут при обработке сигмоиды при вводе 0 будет всегда 0.5, мы это обходим этим методом
         public void SetInputs(params double[] inputs)
@@ -38,16 +39,16 @@ namespace NeuralNetworkLib.Core
             Output = inputs.Average();
         }
 
-        public double ProcessWeights(params double[] inputWeights)
+        public double ProcessInputValues(params double[] inputs)
         {
-            if (_inputs.Length != inputWeights.Count())
-                throw new ArgumentOutOfRangeException(nameof(inputWeights));
+            if (_inputs.Length != inputs.Length)
+                throw new ArgumentOutOfRangeException(nameof(inputs));
 
-            _inputs = inputWeights;
+            _inputs = inputs;
 
-            double sum = 0;
-            for (int i = 0; i < inputWeights.Count(); i++)
-                sum += _weights[i] * inputWeights.ElementAt(i);
+            double sum = 0.0;
+            for (int i = 0; i < inputs.Length; i++)
+                sum += _weights[i] * inputs.ElementAt(i);
 
             return Output = _activationFunction.Calculate(sum);
         }
