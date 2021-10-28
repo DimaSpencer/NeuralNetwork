@@ -1,4 +1,7 @@
-﻿namespace NeuralNetworkLib.Extensions
+﻿using System.Runtime.Serialization;
+using System.Xml;
+
+namespace NeuralNetworkLib.Extensions
 {
     public static class RandomExtensions
     {

@@ -41,17 +41,16 @@ namespace NeuralNetworkLib.Core
             {
                 if (i % 100 == 0)
                     Console.WriteLine($"{i} эпоха пройдена");
-
                 for (int j = 0; j < dataset.Sets.Count; j++)
                 {
                     var inputs = dataset.Sets.ElementAt(j).Key;
                     var expectedResults = dataset.Sets.ElementAt(j).Value;
-                    TrainSet(inputs, expectedResults);
+                    Task.Run(() => TrainSetAsync(inputs, expectedResults));
                 }
             }
         }
 
-        private void TrainSet(IEnumerable<double> inputs, IEnumerable<double> expectedResults)
+        private async Task TrainSetAsync(IEnumerable<double> inputs, IEnumerable<double> expectedResults)
         {
             if (inputs is null)
                 throw new ArgumentNullException(nameof(inputs));
@@ -75,7 +74,7 @@ namespace NeuralNetworkLib.Core
             }
 
             //для остальных нейронов
-            for (int i = _neuralNetworkStudent.LayerOfNeurons.Count() - 2; i >= 0; i--)
+            for (int i = _neuralNetworkStudent.LayerOfNeurons.Count - 2; i >= 0; i--)
             {
                 LayerOfNeurons currentLayer = _neuralNetworkStudent.LayerOfNeurons.ElementAt(i);
                 LayerOfNeurons previousLayer = _neuralNetworkStudent.LayerOfNeurons.ElementAt(i + 1);
@@ -100,7 +99,7 @@ namespace NeuralNetworkLib.Core
         {
             double delta = CalculateDelta(learner.Output, learner.Error);
 
-            for (int i = 0; i < learner.Weights.Count(); i++)
+            for (int i = 0; i < learner.Weights.Count; i++)
             {
                 double weight = learner.Weights.ElementAt(i);
                 double input = learner.Inputs.ElementAt(i);
@@ -117,7 +116,6 @@ namespace NeuralNetworkLib.Core
 
         private double CalculateSigmoidDx(double x)
         {
-            //double sigmoid = 1.0 / (1.0 + Math.Exp(-x));
             return x * (1.0 - x);
         }
     }

@@ -1,12 +1,17 @@
 ﻿using NeuralNetworkLib.Abstractions;
+using NeuralNetworkLib.Maths;
+using System.Runtime.Serialization;
 
 namespace NeuralNetworkLib.Core
 {
-    [Serializable]
+    [DataContract]
+    [KnownType(typeof(Sigmoid))]
+    [KnownType(typeof(Hyperbolic))]
     public class Neuron
     {
-        private readonly IActivationFunction _activationFunction;
-        private double[] _weights;
+        [DataMember] private readonly IActivationFunction _activationFunction;
+        [DataMember] private double[] _weights;
+
         private double[] _inputs;
 
         public Neuron(int relationCount, IActivationFunction activationFunction)
@@ -26,8 +31,8 @@ namespace NeuralNetworkLib.Core
 
         public double Output { get; private set; }
         public double Error { get; set; }
-        public IReadOnlyCollection<double> Inputs => _inputs;
-        public IReadOnlyCollection<double> Weights => _weights;
+        public IReadOnlyList<double> Inputs => _inputs;
+        public IReadOnlyList<double> Weights => _weights;
 
         //временное решение, обязательно поменять, потому что аутпут при обработке сигмоиды при вводе 0 будет всегда 0.5, мы это обходим этим методом
         public void SetInputs(params double[] inputs)
@@ -39,7 +44,7 @@ namespace NeuralNetworkLib.Core
             Output = inputs.Average();
         }
 
-        public double ProcessInputValues(params double[] inputs)
+        public double ProcessInputs(params double[] inputs)
         {
             if (_inputs.Length != inputs.Length)
                 throw new ArgumentOutOfRangeException(nameof(inputs));

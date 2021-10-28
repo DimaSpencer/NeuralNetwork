@@ -1,10 +1,11 @@
-﻿
+﻿using System.Runtime.Serialization;
+
 namespace NeuralNetworkLib.Core
 {
-    [Serializable]
+    [DataContract]
     public class LayerOfNeurons
     {
-        protected List<Neuron> _neurons;
+        [DataMember] protected List<Neuron> _neurons;
 
         public LayerOfNeurons(IEnumerable<Neuron> neurons)
         {
@@ -17,14 +18,14 @@ namespace NeuralNetworkLib.Core
         public IReadOnlyCollection<Neuron> Neurons => _neurons.AsReadOnly();
         public IEnumerable<double> Outputs => _neurons.Select(n => n.Output);
 
-        public int NeuronsCount => _neurons.Count();
+        public int NeuronsCount => _neurons.Count;
 
         public virtual void ProcessLayer(IEnumerable<double> inputWeights)
         {
-            if (inputWeights.Count() != _neurons.First().Weights.Count())
+            if (inputWeights.Count() != _neurons.First().Weights.Count)
                 throw new ArgumentOutOfRangeException(nameof(inputWeights));
 
-            _neurons.ForEach(n => n.ProcessInputValues(inputWeights.ToArray()));
+            _neurons.ForEach(n => n.ProcessInputs(inputWeights.ToArray()));
         }
     }
 }

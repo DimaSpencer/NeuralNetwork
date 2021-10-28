@@ -11,7 +11,7 @@ namespace NeuralNetworkLib.Core
 
             Random weightGenerator = new();
 
-            for (int i = 0; i < neurons.Count(); i++)
+            for (int i = 0; i < neurons.Length; i++)
             {
                 for (int j = 0; j < weightCount; j++)
                 {
@@ -27,7 +27,7 @@ namespace NeuralNetworkLib.Core
             if (value < 0)
                 throw new ArgumentOutOfRangeException(nameof(value));
 
-            for (int i = 0; i < neurons.Count(); i++)
+            for (int i = 0; i < neurons.Length; i++)
             {
                 for (int j = 0; j < weightCount; j++)
                 {

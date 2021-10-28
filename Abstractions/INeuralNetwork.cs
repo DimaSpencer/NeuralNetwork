@@ -1,4 +1,5 @@
 ﻿using NeuralNetworkLib.Core;
+using NeuralNetworkLib.Enums;
 
 namespace NeuralNetworkLib.Abstractions
 {

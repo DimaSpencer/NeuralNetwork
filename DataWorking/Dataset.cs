@@ -1,5 +1,4 @@
-﻿using NeuralNetworkLib.Abstractions;
-using NeuralNetworkLib.Extensions;
+﻿using NeuralNetworkLib.Extensions;
 
 namespace NeuralNetworkLib.Core
 {
@@ -7,23 +6,18 @@ namespace NeuralNetworkLib.Core
     public class Dataset
     {
         private Dictionary<double[], double[]> _datasets;
-        private readonly IInputConverter _converter;
 
-        public Dataset(int inputCount, int expectedResultsCount, IInputConverter? converter = null)
+        public Dataset(int inputCount, int expectedResultsCount)
         {
             if (inputCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(inputCount));
             if (expectedResultsCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(expectedResultsCount));
 
-            if (converter is null)
-                converter = new Scaler();
-
             InputCount = inputCount;
             ExpectedResultsCount = expectedResultsCount;
             
             _datasets = new Dictionary<double[], double[]>();
-            _converter = converter;
         }
 
         public int InputCount { get; }

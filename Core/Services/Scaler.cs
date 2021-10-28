@@ -35,7 +35,7 @@ namespace NeuralNetworkLib.Core
 
             double[,] resultInputs = Convert(arrayInputs);
 
-            Dataset newDataset = new Dataset(dataset.InputCount, dataset.ExpectedResultsCount);
+            Dataset newDataset = new(dataset.InputCount, dataset.ExpectedResultsCount);
 
             newDataset.InitializeFrom2dArray(resultInputs, expectedResults);
 
