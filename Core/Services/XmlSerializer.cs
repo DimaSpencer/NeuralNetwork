@@ -11,23 +11,21 @@ namespace NeuralNetworkLib.Core
         public string Serialize<T>(T obj)
         {
             using MemoryStream memoryStream = new();
-            using StreamReader reader = new(memoryStream);
+            DataContractSerializer serializer = new(obj.GetType());
 
-            DataContractSerializer serializer = new(typeof(T));
             serializer.WriteObject(memoryStream, obj);
-            memoryStream.Position = 0;
 
-            return reader.ReadToEnd();
+            return Encoding.UTF8.GetString(memoryStream.ToArray());
         }
 
         public T Deserialize<T>(string dataString)
         {
             using MemoryStream memoryStream = new(Encoding.UTF8.GetBytes(dataString));
-            using StreamReader reader = new(memoryStream);
-
             DataContractSerializer serializer = new(typeof(T));
 
-            return (T)serializer.ReadObject(memoryStream);
+            XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(memoryStream, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null);
+
+            return (T)serializer.ReadObject(reader);
         }
     }
 }

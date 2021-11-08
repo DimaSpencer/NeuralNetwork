@@ -16,6 +16,7 @@ namespace NeuralNetworkLib.Core
     {   
         [DataMember] private List<LayerOfNeurons> _layerOfNeurons;
 
+        public NeuralNetworkBase() { }
         public NeuralNetworkBase(Action<NeuralNetworkSettings> configuration)
         {
             Configuration = new NeuralNetworkSettings( 0, 0, 0);
@@ -44,8 +45,9 @@ namespace NeuralNetworkLib.Core
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException("file path is null", nameof(filePath));
             if (serializer is null)
-                throw new ArgumentNullException(nameof(serializer)); string xmlData = serializer.Serialize(this);
-
+                throw new ArgumentNullException(nameof(serializer)); 
+            
+            string xmlData = serializer.Serialize(this);
             await FileLoader.SaveAsync(filePath, xmlData);
         }
 
@@ -66,7 +68,7 @@ namespace NeuralNetworkLib.Core
                 throw new ArgumentOutOfRangeException(nameof(inputData));
 
             IEnumerable<double> lastOutputs = inputData;
-            for (int i = 1; i < _layerOfNeurons.Count; i++)
+            for (int i = 0; i < _layerOfNeurons.Count; i++)
             {
                 _layerOfNeurons[i].ProcessLayer(lastOutputs);
                 lastOutputs = _layerOfNeurons[i].Outputs;

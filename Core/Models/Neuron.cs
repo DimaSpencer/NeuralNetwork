@@ -46,8 +46,10 @@ namespace NeuralNetworkLib.Core
 
         public double ProcessInputs(params double[] inputs)
         {
-            if (_inputs.Length != inputs.Length)
-                throw new ArgumentOutOfRangeException(nameof(inputs));
+            if (inputs.Length <= 0)
+                throw new ArgumentOutOfRangeException("Inputs counts out of range", nameof(inputs));
+            if (inputs is null)
+                throw new NullReferenceException("Inputs is null");
 
             _inputs = inputs;
 

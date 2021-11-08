@@ -2,7 +2,9 @@
 {
     public interface ISerializer
     {
-        string Serialize<T>(T obj);
+        //string Serialize<T>(T obj);
         T Deserialize<T>(string dataString);
+
+        string Serialize<T>(T obj);
     }
 }

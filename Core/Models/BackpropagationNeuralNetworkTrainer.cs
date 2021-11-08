@@ -30,27 +30,30 @@ namespace NeuralNetworkLib.Core
             }
         }
 
-        public void StudyingAtDataset(Dataset dataset, int epoch)
+        public void StudyingAtDataset(Dataset dataset, int epoch, CancellationToken? token = null)
         {
             if (dataset is null)
                 throw new ArgumentNullException(nameof(dataset));
             if (epoch < 0)
                 throw new ArgumentOutOfRangeException(nameof(epoch));
 
-            for (int i = 0; i < epoch; i++)
+            for (int i = 0; i < epoch && (token?.IsCancellationRequested ?? true); i++)
             {
-                if (i % 100 == 0)
-                    Console.WriteLine($"{i} эпоха пройдена");
+                //double error = 0.0;
                 for (int j = 0; j < dataset.Sets.Count; j++)
                 {
                     var inputs = dataset.Sets.ElementAt(j).Key;
                     var expectedResults = dataset.Sets.ElementAt(j).Value;
-                    Task.Run(() => TrainSetAsync(inputs, expectedResults));
+
+                    Task.Run(() => TrainNetwork(inputs, expectedResults));
                 }
+
+                if (i % 100 == 0)
+                    Console.WriteLine($"{i} эпоха пройдена");
             }
         }
 
-        private async Task TrainSetAsync(IEnumerable<double> inputs, IEnumerable<double> expectedResults)
+        private double TrainNetwork(IEnumerable<double> inputs, IEnumerable<double> expectedResults)
         {
             if (inputs is null)
                 throw new ArgumentNullException(nameof(inputs));
@@ -59,6 +62,7 @@ namespace NeuralNetworkLib.Core
             if (_neuralNetworkStudent.LayerOfNeurons.Last().NeuronsCount != expectedResults.Count())
                 throw new ArgumentOutOfRangeException(nameof(inputs));
 
+            double resultError = 0.0;
             var actualResults = _neuralNetworkStudent.ProcessData(inputs);
 
             //для последнего результирующего слоя
@@ -69,10 +73,12 @@ namespace NeuralNetworkLib.Core
 
                 double error = actualResults.ElementAt(i) - expectedResults.ElementAt(i);
                 currentNeuron.Error = error;
+                resultError += error;
 
                 TrainNeuron(currentNeuron);
             }
 
+            resultError /= expectedResults.Count(); //вычисляем среднюю ошибку
             //для остальных нейронов
             for (int i = _neuralNetworkStudent.LayerOfNeurons.Count - 2; i >= 0; i--)
             {
@@ -83,7 +89,7 @@ namespace NeuralNetworkLib.Core
                 {
                     Neuron currentNeuron = currentLayer.Neurons.ElementAt(j);
 
-                    for (int k = 0; k < previousLayer.Neurons.Count(); k++)
+                    for (int k = 0; k < previousLayer.Neurons.Count; k++)
                     {
                         Neuron neuron = previousLayer.Neurons.ElementAt(k);
                         double weight = neuron.Weights.ElementAt(j);
@@ -93,6 +99,9 @@ namespace NeuralNetworkLib.Core
                     }
                 }
             }
+
+            resultError = Math.Pow(resultError, 2);
+            return resultError;
         }
 
         private void TrainNeuron(Neuron learner)
@@ -111,12 +120,8 @@ namespace NeuralNetworkLib.Core
 
         private double CalculateDelta(double output, double error)
         {
-            return error * CalculateSigmoidDx(output);
-        }
-
-        private double CalculateSigmoidDx(double x)
-        {
-            return x * (1.0 - x);
+            double dx = output * (1.0 - output);
+            return error * dx;
         }
     }
 }

@@ -4,6 +4,6 @@ namespace NeuralNetworkLib.Abstractions
 {
     public interface INeuralNetworkTrainer
     {
-        void StudyingAtDataset(Dataset dataset, int epoch);
+        void StudyingAtDataset(Dataset dataset, int epoch, CancellationToken? token = null);
     }
 }
