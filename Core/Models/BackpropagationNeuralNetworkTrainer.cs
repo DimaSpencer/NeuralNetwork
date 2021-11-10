@@ -48,8 +48,8 @@ namespace NeuralNetworkLib.Core
                     Task.Run(() => TrainNetwork(inputs, expectedResults));
                 }
 
-                if (i % 100 == 0)
-                    Console.WriteLine($"{i} эпоха пройдена");
+                //if (i % 100 == 0)
+                    Console.WriteLine($"{i + 1} эпоха пройдена");
             }
         }
 

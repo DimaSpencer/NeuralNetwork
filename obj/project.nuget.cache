@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "svFpQ1OItHSbR2Q4LfyHZPpDNLqGnHs/rFDOsSu38k0Yy3E+et9qf4VecOaS538hIqUhF/SftgzhPmis1RNFjw==",
+  "dgSpecHash": "nkzfTRYkCrJLTUhKBF07BghIqdrK229ICwJNGw/W+9TgsGfgkebCA4tQHNRt/w+nHgP2qM6NCV343Urm/BC3aQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Дима\\source\\repos\\NeuralNetworksCMD\\NeuralNetwork\\NeuralNetwork.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Дима\\.nuget\\packages\\csvhelper\\27.1.1\\csvhelper.27.1.1.nupkg.sha512"
+    "C:\\Users\\Дима\\.nuget\\packages\\csvhelper\\27.1.1\\csvhelper.27.1.1.nupkg.sha512",
+    "C:\\Users\\Дима\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\Дима\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

@@ -1,5 +1,6 @@
 ﻿using NeuralNetworkLib.Abstractions;
 using NeuralNetworkLib.Extensions;
+using System.Linq;
 
 namespace NeuralNetworkLib.Core
 {
@@ -42,10 +43,10 @@ namespace NeuralNetworkLib.Core
             return newDataset;
         }
 
-        private double[,] ConvertTo2dArray(IEnumerable<double[]> input)
+        private double[,] ConvertTo2dArray(IEnumerable<IEnumerable<double>> input)
         {
             int columnCount = input.Count();
-            int rowCount = input.ElementAt(0).Length;
+            int rowCount = input.ElementAt(0).Count();
 
             double[,] result = new double[columnCount, rowCount];
 

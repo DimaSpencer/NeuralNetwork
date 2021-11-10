@@ -2,6 +2,7 @@
 using NeuralNetworkLib.Enums;
 using NeuralNetworkLib.Maths;
 using System;
+using System.Drawing;
 using System.Runtime.Serialization;
 
 namespace NeuralNetworkLib.Core
@@ -12,11 +13,12 @@ namespace NeuralNetworkLib.Core
     [KnownType(typeof(LayerOfNeurons))]
     [KnownType(typeof(InputLayerOfNeurons))]
     [KnownType(typeof(NeuralNetworkSettings))]
-    public class NeuralNetworkBase : INeuralNetwork
+    public class NeuralNetworkBase : INeuralNetwork, IAsyncSerializable
     {   
         [DataMember] private List<LayerOfNeurons> _layerOfNeurons;
 
         public NeuralNetworkBase() { }
+
         public NeuralNetworkBase(Action<NeuralNetworkSettings> configuration)
         {
             Configuration = new NeuralNetworkSettings( 0, 0, 0);
