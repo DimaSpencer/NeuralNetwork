@@ -35,5 +35,18 @@ namespace NeuralNetworkLib.Core
                 }
             }
         }
+
+        public static void InitializeMatrixCoreRandomValues(double[,] core)
+        {
+            if (core is null)
+                throw new ArgumentNullException(nameof(core), "Matrix is null");
+
+            int rowLength = core.GetLength(0);
+            int columnLength = core.GetLength(1);
+            for (int rowIndex = 0; rowIndex < core.GetLength(1); rowIndex++)
+            {
+
+            }
+        }
     }
 }

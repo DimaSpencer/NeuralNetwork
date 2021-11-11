@@ -1,16 +1,25 @@
-﻿
+﻿using NeuralNetworkLib.Abstractions;
+using NeuralNetworkLib.Core;
 using NeuralNetworkLib.Maths;
+using System.Drawing;
 
 namespace NeuralNetwork.Core.Models
 {
-    public class NeuronGroup
+    public class ConvolutionKernel
     {
         private double[,] _filter;
         private List<ConvolutionNeuron> _neurons;
 
-        public NeuronGroup(double[,] filter)
+        public ConvolutionKernel(double[,] filter)
         {
             _filter = filter;
+        }
+
+        public double[,] OutputMap { get; private set; }
+
+        public void InitializeRandomValues()
+        {
+            WeightsInitializer.InitializeMatrixKernalRandomValues(_filter);
         }
 
         public double[,] Process(double[,] image, int stride)
@@ -22,6 +31,7 @@ namespace NeuralNetwork.Core.Models
             double[,] result = new double[rowCount - 1, columnCount - 1];
 
             _neurons = new List<ConvolutionNeuron>(neuronCount);
+
             for (int i = 0; i < neuronCount; i++)
                 _neurons.Add(new ConvolutionNeuron(_filter, new Sigmoid()));
 
@@ -41,6 +51,7 @@ namespace NeuralNetwork.Core.Models
                 }
             }
 
+            OutputMap = result;
             return result;
         }
 

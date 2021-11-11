@@ -5,9 +5,9 @@ namespace NeuralNetworkLib.Extensions
 {
     public static class RandomExtensions
     {
-        public static double NextDouble(this Random RandGenerator, double MinValue, double MaxValue)
+        public static double NextDouble(this Random RandGenerator, double minValue, double maxValue)
         {
-            return RandGenerator.NextDouble() * (MaxValue - MinValue) + MinValue;
+            return RandGenerator.NextDouble() * (maxValue - minValue) + minValue;
         }
     }
 }
