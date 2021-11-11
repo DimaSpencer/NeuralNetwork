@@ -15,14 +15,7 @@ namespace NeuralNetwork.Core
             using var reader = new StreamReader(source);
             using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
 
-            try
-            {
-                return csvReader.GetRecords<TRow>().ToList();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return csvReader.GetRecords<TRow>().ToList();
         }
     }
 }

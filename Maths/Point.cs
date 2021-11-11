@@ -1,4 +1,4 @@
-﻿namespace NeuralNetwork.Core.Models
+﻿namespace NeuralNetwork.Maths
 {
     public struct Point
     {

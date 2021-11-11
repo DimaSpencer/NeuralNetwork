@@ -36,16 +36,21 @@ namespace NeuralNetworkLib.Core
             }
         }
 
-        public static void InitializeMatrixCoreRandomValues(double[,] core)
+        public static void InitializeMatrixKernelRandomValues(double[,] kernel)
         {
-            if (core is null)
-                throw new ArgumentNullException(nameof(core), "Matrix is null");
+            if (kernel is null)
+                throw new ArgumentNullException(nameof(kernel), "Matrix is null");
 
-            int rowLength = core.GetLength(0);
-            int columnLength = core.GetLength(1);
-            for (int rowIndex = 0; rowIndex < core.GetLength(1); rowIndex++)
+            Random weightGenerator = new();
+            int rowLength = kernel.GetLength(0);
+            int columnLength = kernel.GetLength(1);
+
+            for (int rowIndex = 0; rowIndex < rowLength; rowIndex++)
             {
-
+                for (int columnIndex = 0; columnIndex < columnLength; columnIndex++)
+                {
+                    kernel[rowIndex, columnIndex] = weightGenerator.Next(-10, 10);
+                }
             }
         }
     }
