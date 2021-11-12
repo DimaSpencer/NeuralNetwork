@@ -1,19 +1,30 @@
 ﻿using NeuralNetwork.Abstractions;
+using System.Collections.Generic;
 
 namespace NeuralNetwork.Core.Models
 {
     public class ConvolutionalLayer : IConvolutionalNeuralNetworkLayer
     {
+        private readonly int _padding;
+        private readonly int _stride;
+
         private readonly List<Filter> _filters;
         private List<double[,]> _outputFeatureMaps;
 
-        public ConvolutionalLayer(int kernelSize, int filtersCount, int inputCanals)
+        public ConvolutionalLayer(int kernelSize, int filtersCount, int inputCanals, int padding = 0, int stride = 1)
         {
             if (kernelSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(kernelSize), "Kernal size out of range");
             if (filtersCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(filtersCount), "Kernal count out of range");
-
+            if (padding < 0)
+                throw new ArgumentOutOfRangeException(nameof(padding));
+            if (stride <= 0)
+                throw new ArgumentOutOfRangeException(nameof(stride));
+            
+            _padding = padding;
+            _stride = stride;
+            
             _filters = new List<Filter>(filtersCount);
             _outputFeatureMaps = new List<double[,]>(filtersCount);
 
@@ -33,34 +44,48 @@ namespace NeuralNetwork.Core.Models
 
         public IReadOnlyList<double[,]> Output => _outputFeatureMaps.AsReadOnly();
 
-        //TODO: тут подогнать метод под метод интерфейса
-        public IList<double[,]> ProcessCanalsTwo(IEnumerable<double[,]> canals, int padding = 0, int stride = 1)
+        public IList<double[,]> ProcessCanals(IEnumerable<double[,]> canals)
         {
-            if(canals.Count() != _filters[0].Kernels.Count)
+            if (canals.Count() != _filters[0].Kernels.Count)
+                throw new ArgumentException("Input channels must be equal to the number of kernels", nameof(canals));
             if (canals is null)
                 throw new ArgumentNullException(nameof(canals), "Input is null");
-            if (padding < 0)
-                throw new ArgumentOutOfRangeException(nameof(padding));
-            if (stride <= 0)
-                throw new ArgumentOutOfRangeException(nameof(stride));
 
-            //TODO: добавить паддинг к входному изображения
             List<double[,]> featureMaps = new(_filters.Count);
 
-            //обрабатываем каждый канали каждым ядром
+            if (_padding > 0)
+                canals = AddPadding(canals);
+
             foreach (var filter in _filters)
             {
-                double[,] map = filter.Process(canals, stride);
-
+                double[,] map = filter.Process(canals, _stride);
                 featureMaps.Add(map);
             }
 
             return featureMaps;
         }
 
-        public IList<double[,]> ProcessCanals(IEnumerable<double[,]> canals, int kernelSize)
+        private List<double[,]> AddPadding(IEnumerable<double[,]> canals)
         {
-            throw new NotImplementedException();
+            List<double[,]> output = canals.ToList();
+
+            for (int i = 0; i < output.Count; i++)
+            {
+                int rows = output[i].GetLength(0);
+                int columns = output[i].GetLength(1);
+
+                int newRows = rows + _padding * 2;
+                int newColumns = columns + _padding * 2;
+
+                double[,] newArray = new double[newRows, newColumns];
+                for (int m = _padding, canalRowIndex = 0; canalRowIndex < rows; m++, canalRowIndex++)
+                    for (int n = _padding, canalColumnIndex = 0; canalColumnIndex < columns; n++, canalColumnIndex++)
+                        newArray[m, n] = output[i][canalRowIndex, canalColumnIndex];
+
+                output[i] = newArray;
+            }
+
+            return output;
         }
     }
 }

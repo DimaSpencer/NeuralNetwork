@@ -9,27 +9,25 @@ namespace NeuralNetwork.Core
     {
         private List<double[,]> _output;
 
-        public SubsamplingLayer(int size = 2)
+        public SubsamplingLayer(int kernelSize = 2)
         {
-            if (size <= 1)
-                throw new ArgumentOutOfRangeException(nameof(size));
+            if (kernelSize <= 1)
+                throw new ArgumentOutOfRangeException(nameof(kernelSize));
 
-            Size = size;
+            KernelSize = kernelSize;
             _output = new List<double[,]>();
         }
 
-        public int Size { get; private set; }
+        public int KernelSize { get; private set; }
         public IReadOnlyList<double[,]> Output => _output.AsReadOnly();
 
-        public IList<double[,]> ProcessCanals(IEnumerable<double[,]> canals, int kernelSize)
+        public IList<double[,]> ProcessCanals(IEnumerable<double[,]> canals)
         {
-            if (kernelSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(kernelSize));
             //размер окна не соответствует изображению, будет слишком много пикселей, либо слишком мало
-            if (canals.ElementAt(0).GetLength(0) % kernelSize != 0)
-                throw new ArgumentNullException(nameof(kernelSize));
-            if (canals.ElementAt(0).GetLength(1) % kernelSize != 0)
-                throw new ArgumentNullException(nameof(kernelSize));
+            if (canals.ElementAt(0).GetLength(0) % KernelSize != 0)
+                throw new ArgumentNullException(nameof(KernelSize));
+            if (canals.ElementAt(0).GetLength(1) % KernelSize != 0)
+                throw new ArgumentNullException(nameof(KernelSize));
 
             //общие характеристики для всех каналов, потому что они все одинаковые в размерности
             double[,] firstCanal = canals.ElementAt(0);
@@ -40,16 +38,16 @@ namespace NeuralNetwork.Core
 
             foreach (var canal in canals)
             {
-                int toRowIndex = rowCount - kernelSize;
-                int toColumnIndex = columnCount - kernelSize;
+                int toRowIndex = rowCount - KernelSize;
+                int toColumnIndex = columnCount - KernelSize;
 
-                double[,] outputMap = new double[rowCount / kernelSize, columnCount / kernelSize];
+                double[,] outputMap = new double[rowCount / KernelSize, columnCount / KernelSize];
 
-                for (int rowIndex = 0, outputRowIndex = 0; rowIndex <= toRowIndex; rowIndex += kernelSize, outputRowIndex++)
+                for (int rowIndex = 0, outputRowIndex = 0; rowIndex <= toRowIndex; rowIndex += KernelSize, outputRowIndex++)
                 {
-                    for (int columnIndex = 0, outputColumnIndex = 0; columnIndex <= toColumnIndex; columnIndex += kernelSize, outputColumnIndex++)
+                    for (int columnIndex = 0, outputColumnIndex = 0; columnIndex <= toColumnIndex; columnIndex += KernelSize, outputColumnIndex++)
                     {
-                        double[,] area = canal.GetAreaByIndex(new Point(columnIndex, rowIndex), kernelSize, kernelSize);
+                        double[,] area = canal.GetAreaByIndex(new Point(columnIndex, rowIndex), KernelSize, KernelSize);
                         double maxValue = area.Cast<double>().Max();
 
                         outputMap[outputRowIndex, outputColumnIndex] = maxValue;
