@@ -1,46 +1,52 @@
-﻿
+﻿using NeuralNetwork.Core.Models;
 using System.Collections.Generic;
 
-namespace NeuralNetwork.Core.Models
+namespace NeuralNetwork.Core
 {
     public class ConvolutionalNeuralNetwork
     {
-        private readonly List<LayerOf2DKernel> _layers;
-        
-        public ConvolutionalNeuralNetwork(int convolutionalLayerAmount, int kernelSize = 3)
+        private readonly List<ConvolutionalLayer> _convolutionalLayer;
+        private readonly List<SubsamplingLayer> _subsamplingLayers;
+        public ConvolutionalNeuralNetwork(int convolutionalLayerAmount,int inputCanals, int kernelSize = 3)
         {
             if (convolutionalLayerAmount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(convolutionalLayerAmount), "Convolution layer out of range");
+            if (inputCanals <= 0)
+                throw new ArgumentOutOfRangeException(nameof(inputCanals));
             if (kernelSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(kernelSize), "Kernal size value out of range");
 
-            _layers = new List<LayerOf2DKernel>(convolutionalLayerAmount);
+            _convolutionalLayer = new List<ConvolutionalLayer>(convolutionalLayerAmount);
 
-            for (int i = 0; i < convolutionalLayerAmount; i++)
-            {
-                //для каждого слоя будет сделано три ядра
-                LayerOf2DKernel kernel = new(kernelSize, 3);
-                _layers.Add(kernel);
-            }
+            double[,] inputImage = new double[32, 32];
+            //первый слой
+            ConvolutionalLayer layerOfFilters = new(
+                kernelSize: 5,
+                filtersCount: 6,
+                inputCanals: 1);
+
+            _convolutionalLayer.Add(layerOfFilters);
         }
 
-        public void ProcessChanals(double[,] chanal, int stride)
+        public void ProcessCanals(double[,] canal, int stride, int padding = 0)
         {
-            ProcessChanals(new List<double[,]> { chanal }, stride);
+            ProcessCanals(new List<double[,]> { canal }, stride, padding);
         }
 
-        public void ProcessChanals(IEnumerable<double[,]> chanals, int stride)
+        public void ProcessCanals(IEnumerable<double[,]> canals, int stride, int padding = 0)
         {
-            if (chanals is null)
-                throw new ArgumentNullException(nameof(chanals), "Image is null");
+            if (canals is null)
+                throw new ArgumentNullException(nameof(canals), "Image is null");
             if (stride <= 0)
                 throw new ArgumentOutOfRangeException(nameof(stride));
+            if (padding < 0)
+                throw new ArgumentOutOfRangeException(nameof(padding));
 
-            IEnumerable<double[,]> lastChanals = chanals;
-            foreach (var layer in _layers)
+            IEnumerable<double[,]> lastCanals = canals;
+            foreach (var layer in _convolutionalLayer)
             {
-                lastChanals = layer.ProcessCanals(lastChanals);
-                //тут можна пройти процесс сжатия
+                lastCanals = layer.ProcessCanals(lastCanals, 3);
+                //тут можна пройти процесс сжатия если таков слой имеется
             }
         }
     }

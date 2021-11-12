@@ -24,8 +24,10 @@ namespace NeuralNetworkLib.Extensions
             return result;
         }
 
-        public static IList<double[,]> ConvertToRGBMatrixList(this Bitmap source)
+        public static IList<double[,]> ConvertToRGBMatrixList(this Bitmap source, Size newSize = default)
         {
+            source = newSize == default ? source : new Bitmap(source, newSize);
+
             int chanalCount = 3;
             List<double[,]> result = new List<double[,]>
             {
